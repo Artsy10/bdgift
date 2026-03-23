@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="confetti.png">
+<title>Happy Birthday</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background-image: url(bg.jpg);
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+
+  /* Fade in */
+  animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Layout */
+.container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Side icon */
+.side-icon img {
+  width: 60px;
+  opacity: 0.8;
+}
+
+/* Hint */
+.hint {
+  position: absolute;
+  top: 10px;
+  color: #fff;
+  font-size: 18px;
+  opacity: 0.7;
+  animation: fadeBlink 2s infinite;
+}
+
+@keyframes fadeBlink {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 0.2; }
+}
+
+/* Card */
+.card {
+  height: 90vh;
+  aspect-ratio: 1562 / 2082;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 1s;
+}
+
+.card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.front img, .back img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.back {
+  transform: rotateY(180deg);
+  position: relative;
+}
+
+/* Reveal */
+.back-content {
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.back.show .back-content {
+  opacity: 1;
+}
+
+/* Hearts */
+.heart {
+  position: absolute;
+  color: pink;
+  font-size: 16px;
+  animation: floatUp 5s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(100px); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(-500px); opacity: 0; }
+}
+
+/* Music button */
+.music-btn {
+  position: fixed;   /* 👈 important */
+  bottom: 20px;
+  right: 20px;
+  width: 35px;       /* control size */
+  cursor: pointer;
+  opacity: 0.8;
+  z-index: 1000;
+}
+
+/* make image fit button */
+.music-btn img {
+  width: 100%;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .card {
+    height: 75vh;
+  }
+
+  .side-icon img {
+    width: 40px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="hint" id="hint">Tap the card 💌</div>
+
+<div class="container">
+
+  <!-- Optional side icon -->
+  <div class="side-icon">
+    <img src="icon.png" alt="">
+  </div>
+
+  <div class="card" onclick="flipCard()">
+    <div class="card-inner">
+      
+      <div class="card-face front">
+        <img src="front.png">
+      </div>
+
+      <div class="card-face back" id="back">
+        <div class="back-content">
+          <img src="back.png">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Music -->
+<audio id="music" src="music.mp3" autoplay loop></audio>
+
+<div class="music-btn" onclick="toggleMusic()" id="musicBtn"><img src="sound-on.png"></div>
+
+<script>
+let flipped = false;
+let heartsCreated = false;
+let musicStarted = false;
+
+const music = document.getElementById('music');
+music.volume = 0.2; // calm volume
+
+// Start music once
+   // Play music once
+window.addEventListener("click", () => {
+  if (music.paused) {
+    music.play();
+  }
+}, { once: true });
+  
+function flipCard() {
+  const card = document.querySelector('.card');
+  const hint = document.getElementById('hint');
+  const back = document.getElementById('back');
+
+  flipped = !flipped;
+  card.classList.toggle('flipped');
+
+  // Show hint ONLY when front
+  if (!flipped) {
+    hint.style.display = "block";
+  } else {
+    hint.style.display = "none";
+  }
+
+  
+
+  if (!heartsCreated) {
+    createHearts();
+    heartsCreated = true;
+  }
+
+  if (flipped) {
+    setTimeout(() => {
+      back.classList.add("show");
+    }, 250);
+  } else {
+    back.classList.remove("show");
+  }
+}
+
+function toggleMusic() {
+  const btn = document.getElementById("musicBtn");
+
+  if (music.paused) {
+    music.play();
+    btn.innerHTML = '<img src="sound-on.png">';
+  } else {
+    music.pause();
+    btn.innerHTML = '<img src="sound-off.png">';
+  }
+}
+
+function createHearts() {
+  const container = document.getElementById('back');
+
+  for (let i = 0; i < 8; i++) {
+    let heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+
+    let side = Math.random() < 0.5 ? "left" : "right";
+    heart.style[side] = Math.random() * 20 + "px";
+    heart.style.animationDelay = Math.random() * 3 + "s";
+
+    container.appendChild(heart);
+  }
+}
+</script>
+
+</body>
+</html>
