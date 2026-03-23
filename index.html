@@ -2,28 +2,27 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" type="image/png" href="confetti.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Happy Birthday</title>
+<link rel="icon" type="image/png" href="confetti.png">
 
 <style>
-/* ===== BODY ===== */
-body {
+/* ===== GLOBAL ===== */
+* {
+  box-sizing: border-box;
   margin: 0;
-  min-height: 100vh;
-  background-image: url(bg.jpg);
-  background-size: cover;
-  background-position: center;
+  padding: 0;
+}
+
+body {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow-x: hidden;
+  height: 100vh;
+  background: url('bg.jpg') no-repeat center center fixed;
+  background-size: cover;
   font-family: Arial, sans-serif;
-  animation: fadeIn 1s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  overflow-x: hidden;
 }
 
 /* ===== HINT ===== */
@@ -37,23 +36,28 @@ body {
 }
 
 @keyframes fadeBlink {
-  0%, 100% { opacity: 0.7; }
+  0%,100% { opacity: 0.7; }
   50% { opacity: 0.2; }
 }
 
-/* ===== CONTAINER ===== */
+/* ===== CARD CONTAINER ===== */
 .container {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 20px;
 }
 
-/* ===== SIDE ICON ===== */
-.side-icon img {
-  width: 60px;
-  opacity: 0.8;
+/* ===== CARD ===== */
+.card {
+  width: 50vw;
+  max-width: 600px;
+  min-width: 250px;
+  height: auto;
+  aspect-ratio: 1562/2082;
+  perspective: 1000px;
+  cursor: pointer;
 }
-/* Card */ .card { height: 90vh; aspect-ratio: 1562 / 2082; perspective: 1000px; cursor: pointer; }
 
 .card-inner {
   width: 100%;
@@ -129,19 +133,10 @@ body {
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-    gap: 10px;
-  }
-
   .card {
     width: 80vw;
     max-width: 350px;
-    min-width: 250px;
-  }
-
-  .side-icon img {
-    width: 40px;
+    min-width: 200px;
   }
 
   .hint {
@@ -155,8 +150,6 @@ body {
   .music-btn {
     width: 40px;
     height: 40px;
-    bottom: 15px;
-    right: 15px;
   }
 }
 
@@ -164,7 +157,7 @@ body {
   .card {
     width: 90vw;
     max-width: 300px;
-    min-width: 200px;
+    min-width: 180px;
   }
 }
 </style>
@@ -178,22 +171,20 @@ body {
 
   <!-- Optional side icon -->
   <div class="side-icon">
-    <img src="icon.png" alt="">
+    <img src="icon.png" alt="" style="width:50px; margin-bottom:10px;">
   </div>
 
+  <!-- Flip Card -->
   <div class="card" onclick="flipCard()">
     <div class="card-inner">
-      
       <div class="card-face front">
         <img src="front.png" alt="Front">
       </div>
-
       <div class="card-face back" id="back">
         <div class="back-content">
           <img src="back.png" alt="Back">
         </div>
       </div>
-
     </div>
   </div>
 
@@ -201,7 +192,6 @@ body {
 
 <!-- Music -->
 <audio id="music" src="music.mp3" loop></audio>
-
 <div class="music-btn" onclick="toggleMusic()" id="musicBtn">
   <img src="sound-on.png" alt="Music Button">
 </div>
@@ -218,6 +208,7 @@ window.addEventListener("click", () => {
   if (music.paused) music.play();
 }, { once: true });
 
+// Flip card function
 function flipCard() {
   const card = document.querySelector('.card');
   const hint = document.getElementById('hint');
@@ -240,9 +231,9 @@ function flipCard() {
   }
 }
 
+// Toggle music
 function toggleMusic() {
   const btn = document.getElementById("musicBtn");
-
   if (music.paused) {
     music.play();
     btn.innerHTML = '<img src="sound-on.png" alt="Music On">';
@@ -252,6 +243,7 @@ function toggleMusic() {
   }
 }
 
+// Create floating hearts
 function createHearts() {
   const container = document.getElementById('back');
 
