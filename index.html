@@ -6,18 +6,18 @@
 <title>Happy Birthday</title>
 
 <style>
+/* ===== BODY ===== */
 body {
   margin: 0;
-  height: 100vh;
+  min-height: 100vh;
   background-image: url(bg.jpg);
   background-size: cover;
+  background-position: center;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  overflow-x: hidden;
   font-family: Arial, sans-serif;
-
-  /* Fade in */
   animation: fadeIn 1s ease;
 }
 
@@ -26,20 +26,7 @@ body {
   to { opacity: 1; }
 }
 
-/* Layout */
-.container {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-/* Side icon */
-.side-icon img {
-  width: 60px;
-  opacity: 0.8;
-}
-
-/* Hint */
+/* ===== HINT ===== */
 .hint {
   position: absolute;
   top: 10px;
@@ -54,13 +41,19 @@ body {
   50% { opacity: 0.2; }
 }
 
-/* Card */
-.card {
-  height: 90vh;
-  aspect-ratio: 1562 / 2082;
-  perspective: 1000px;
-  cursor: pointer;
+/* ===== CONTAINER ===== */
+.container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
+
+/* ===== SIDE ICON ===== */
+.side-icon img {
+  width: 60px;
+  opacity: 0.8;
+}
+/* Card */ .card { height: 90vh; aspect-ratio: 1562 / 2082; perspective: 1000px; cursor: pointer; }
 
 .card-inner {
   width: 100%;
@@ -94,7 +87,6 @@ body {
   position: relative;
 }
 
-/* Reveal */
 .back-content {
   opacity: 0;
   transition: opacity 0.8s ease;
@@ -104,7 +96,7 @@ body {
   opacity: 1;
 }
 
-/* Hearts */
+/* ===== HEARTS ===== */
 .heart {
   position: absolute;
   color: pink;
@@ -119,34 +111,60 @@ body {
   100% { transform: translateY(-500px); opacity: 0; }
 }
 
-/* Music button */
+/* ===== MUSIC BUTTON ===== */
 .music-btn {
-  position: fixed;   /* 👈 important */
+  position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 35px;       /* control size */
+  width: 35px;
+  height: 35px;
   cursor: pointer;
   opacity: 0.8;
   z-index: 1000;
 }
 
-/* make image fit button */
 .music-btn img {
   width: 100%;
 }
 
-/* Mobile */
+/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
+    gap: 10px;
   }
 
   .card {
-    height: 75vh;
+    width: 80vw;
+    max-width: 350px;
+    min-width: 250px;
   }
 
   .side-icon img {
     width: 40px;
+  }
+
+  .hint {
+    font-size: 14px;
+  }
+
+  .heart {
+    font-size: 12px;
+  }
+
+  .music-btn {
+    width: 40px;
+    height: 40px;
+    bottom: 15px;
+    right: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    width: 90vw;
+    max-width: 300px;
+    min-width: 200px;
   }
 }
 </style>
@@ -167,12 +185,12 @@ body {
     <div class="card-inner">
       
       <div class="card-face front">
-        <img src="front.png">
+        <img src="front.png" alt="Front">
       </div>
 
       <div class="card-face back" id="back">
         <div class="back-content">
-          <img src="back.png">
+          <img src="back.png" alt="Back">
         </div>
       </div>
 
@@ -182,26 +200,24 @@ body {
 </div>
 
 <!-- Music -->
-<audio id="music" src="music.mp3" autoplay loop></audio>
+<audio id="music" src="music.mp3" loop></audio>
 
-<div class="music-btn" onclick="toggleMusic()" id="musicBtn"><img src="sound-on.png"></div>
+<div class="music-btn" onclick="toggleMusic()" id="musicBtn">
+  <img src="sound-on.png" alt="Music Button">
+</div>
 
 <script>
 let flipped = false;
 let heartsCreated = false;
-let musicStarted = false;
 
 const music = document.getElementById('music');
-music.volume = 0.2; // calm volume
+music.volume = 0.2;
 
-// Start music once
-   // Play music once
+// Start music on first click anywhere
 window.addEventListener("click", () => {
-  if (music.paused) {
-    music.play();
-  }
+  if (music.paused) music.play();
 }, { once: true });
-  
+
 function flipCard() {
   const card = document.querySelector('.card');
   const hint = document.getElementById('hint');
@@ -210,14 +226,7 @@ function flipCard() {
   flipped = !flipped;
   card.classList.toggle('flipped');
 
-  // Show hint ONLY when front
-  if (!flipped) {
-    hint.style.display = "block";
-  } else {
-    hint.style.display = "none";
-  }
-
-  
+  hint.style.display = flipped ? "none" : "block";
 
   if (!heartsCreated) {
     createHearts();
@@ -225,9 +234,7 @@ function flipCard() {
   }
 
   if (flipped) {
-    setTimeout(() => {
-      back.classList.add("show");
-    }, 250);
+    setTimeout(() => back.classList.add("show"), 250);
   } else {
     back.classList.remove("show");
   }
@@ -238,10 +245,10 @@ function toggleMusic() {
 
   if (music.paused) {
     music.play();
-    btn.innerHTML = '<img src="sound-on.png">';
+    btn.innerHTML = '<img src="sound-on.png" alt="Music On">';
   } else {
     music.pause();
-    btn.innerHTML = '<img src="sound-off.png">';
+    btn.innerHTML = '<img src="sound-off.png" alt="Music Off">';
   }
 }
 
